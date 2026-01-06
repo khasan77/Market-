@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class FavoriteListTableViewCell: UITableViewCell {
     
@@ -18,6 +19,7 @@ final class FavoriteListTableViewCell: UITableViewCell {
         image.translatesAutoresizingMaskIntoConstraints = false
         image.clipsToBounds = true
         image.layer.cornerRadius = 12
+        image.contentMode = .scaleAspectFill
         return image
     }()
     
@@ -66,7 +68,15 @@ final class FavoriteListTableViewCell: UITableViewCell {
     }
     
     func configure(item: Product) {
-        productImageView.image = UIImage(named: item.image)
         productTitle.text = item.title
+        
+        // если нужно загружаем, иначе просто берем локальное 
+        if let imageURLString = item.imageURL, !imageURLString.isEmpty, let url = URL(string: imageURLString) {
+            let placeholder = UIImage(named: "luke")
+            productImageView.kf.setImage(with: url, placeholder: placeholder)
+        } else {
+            productImageView.image = UIImage(named: item.image)
+            productImageView.kf.cancelDownloadTask() // Cancel any ongoing download
+        }
     }
 }

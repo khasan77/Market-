@@ -76,7 +76,10 @@ extension ProductsTableViewCell: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductsCollectionViewCell.identifier, for: indexPath) as? ProductsCollectionViewCell else {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: ProductsCollectionViewCell.identifier,
+            for: indexPath
+        ) as? ProductsCollectionViewCell else {
             fatalError("Can not dequeue ProductsCollectionViewCell")
         }
         let item = items[indexPath.item]

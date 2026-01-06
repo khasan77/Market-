@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 protocol ProductCollectionViewCellDelegate: AnyObject {
     func likeButtonTapped(cell: ProductsCollectionViewCell, isSelected: Bool)
@@ -25,6 +26,7 @@ final class ProductsCollectionViewCell: UICollectionViewCell {
         imageView.image = UIImage(named: "luke")
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 12
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
@@ -38,8 +40,8 @@ final class ProductsCollectionViewCell: UICollectionViewCell {
     private let likeButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
-        button.tintColor = .white
+        button.setImage(UIImage(systemName: "heart"), for: .normal)
+        button.tintColor = .black
         return button
     }()
     
@@ -103,19 +105,27 @@ final class ProductsCollectionViewCell: UICollectionViewCell {
     
     private func updateLikeButton(isSelected: Bool) {
         if isSelected {
-            likeButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
+            likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
             likeButton.tintColor = .red
         } else {
-            likeButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
-            likeButton.tintColor = .white
+            likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
+            likeButton.tintColor = .black
         }
     }
     
     func configure(item: Product) {
-        imageView.image = UIImage(named: item.image)
         titleLabel.text = item.title
         let isLiked = FavoritesStorage.shared.items.contains { $0 === item }
         updateLikeButton(isSelected: isLiked)
+        
+        // если надо загружаем, иначе берем локальное
+        if let imageURLString = item.imageURL, !imageURLString.isEmpty, let url = URL(string: imageURLString) {
+            let placeholder = UIImage(named: "luke")
+            imageView.kf.setImage(with: url, placeholder: placeholder)
+        } else {
+            imageView.image = UIImage(named: item.image)
+            imageView.kf.cancelDownloadTask() // отменяем все текущие загрузки
+        }
     }
 }
 
