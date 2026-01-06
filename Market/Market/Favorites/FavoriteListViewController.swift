@@ -73,7 +73,12 @@ final class FavoriteListViewController: UIViewController {
     }
     
     private func setupNotificationCenter() {
-        NotificationCenter.default.addObserver(self, selector: #selector(favoriteListChanged), name: Notifications.favoritesChanged, object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(favoriteListChanged),
+            name: Notifications.favoritesChanged,
+            object: nil
+        )
     }
     
     @objc
@@ -131,7 +136,10 @@ extension FavoriteListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: FavoriteListTableViewCell.identifier, for: indexPath) as? FavoriteListTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: FavoriteListTableViewCell.identifier,
+            for: indexPath
+        ) as? FavoriteListTableViewCell else {
             fatalError("Can not dequeue FavoriteListTableViewCell")
         }
         cell.configure(item: FavoritesStorage.shared.items[indexPath.row])
@@ -144,7 +152,10 @@ extension FavoriteListViewController: UITableViewDataSource {
 
 extension FavoriteListViewController: UITableViewDelegate {
     
-    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    func tableView(
+        _ tableView: UITableView,
+        leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: "Удалить") { [weak self] _, _, _ in
             self?.handleDelete(indexPath: indexPath)
         }

@@ -26,35 +26,37 @@ final class ProductsListViewController: UIViewController {
     
     // MARK: - Private properties
     
-    private let sections = [
-        ProductSection(
-            title: "Популярное",
-            items: [
-                Product(image: "luke", title: "The"),
-                Product(image: "luke", title: "most"),
-                Product(image: "luke", title: "powerful"),
-                Product(image: "luke", title: "Jedi")
-            ]
-        ),
-        ProductSection(
-            title: "Хиты продаж",
-            items: [
-                Product(image: "luke", title: "The"),
-                Product(image: "luke", title: "most"),
-                Product(image: "luke", title: "powerful"),
-                Product(image: "luke", title: "Jedi")
-            ]
-        ),
-        ProductSection(
-            title: "Распродажа",
-            items: [
-                Product(image: "luke", title: "The"),
-                Product(image: "luke", title: "most"),
-                Product(image: "luke", title: "powerful"),
-                Product(image: "luke", title: "Jedi")
-            ]
-        )
-    ]
+//    private let sections = [
+//        ProductSection(
+//            title: "Популярное",
+//            items: [
+//                Product(image: "luke", title: "The"),
+//                Product(image: "luke", title: "most"),
+//                Product(image: "luke", title: "powerful"),
+//                Product(image: "luke", title: "Jedi")
+//            ]
+//        ),
+//        ProductSection(
+//            title: "Хиты продаж",
+//            items: [
+//                Product(image: "luke", title: "The"),
+//                Product(image: "luke", title: "most"),
+//                Product(image: "luke", title: "powerful"),
+//                Product(image: "luke", title: "Jedi")
+//            ]
+//        ),
+//        ProductSection(
+//            title: "Распродажа",
+//            items: [
+//                Product(image: "luke", title: "The"),
+//                Product(image: "luke", title: "most"),
+//                Product(image: "luke", title: "powerful"),
+//                Product(image: "luke", title: "Jedi")
+//            ]
+//        )
+//    ]
+    
+    private var sections: [ProductSection] = []
     
     // MARK: - Lyfecycle
 
@@ -68,6 +70,8 @@ final class ProductsListViewController: UIViewController {
         setupCollectionViewLayout()
         
         collectionView.dataSource = self
+        
+        loadProducts()
     }
     
     // MARK: - Private methods
@@ -82,6 +86,16 @@ final class ProductsListViewController: UIViewController {
         
         collectionView.register(ProductsCollectionViewCell.self, forCellWithReuseIdentifier: ProductsCollectionViewCell.identifier)
         collectionView.register(ProductSectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: ProductSectionHeaderView.identifier)
+    }
+    
+    private func loadProducts() {
+        ProductsSectionProvider.makeSections { [weak self] sections in
+            guard let self = self else { return }
+            self.sections = sections
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+        }
     }
     
     func headerActionButtonTapped(indexPath: IndexPath?) {
@@ -108,7 +122,10 @@ extension ProductsListViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductsCollectionViewCell.identifier, for: indexPath) as? ProductsCollectionViewCell else {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: ProductsCollectionViewCell.identifier,
+            for: indexPath
+        ) as? ProductsCollectionViewCell else {
             fatalError("something went wrong!")
         }
         let item = sections[indexPath.section].items[indexPath.item]

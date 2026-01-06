@@ -20,7 +20,7 @@ final class ProductListViewController: UIViewController {
     
     // MARK: - Private properties
     
-    private let storedSections = ProductsSectionProvider.makeSections()
+    private var storedSections: [ProductSection] = []
     
     private var searchResultSection: ProductSection?
     
@@ -58,7 +58,14 @@ final class ProductListViewController: UIViewController {
         
         setupLayout()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(favoritesChanged), name: Notifications.favoritesChanged, object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(favoritesChanged),
+            name: Notifications.favoritesChanged,
+            object: nil
+        )
+        
+        loadProducts()
     }
     
     // MARK: - Layout
@@ -87,6 +94,16 @@ final class ProductListViewController: UIViewController {
         tableView.reloadData()
     }
     
+    private func loadProducts() {
+        ProductsSectionProvider.makeSections { [weak self] sections in
+            guard let self = self else { return }
+            self.storedSections = sections
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
+    }
+    
     func headerActionButtonTapped(index: Int?) {
         guard let index = index else { return }
         
@@ -112,7 +129,10 @@ extension ProductListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductsTableViewCell.identifier, for: indexPath) as? ProductsTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: ProductsTableViewCell.identifier,
+            for: indexPath
+        ) as? ProductsTableViewCell else {
             fatalError("Can not dequeue ProductsTableViewCell")
         }
         let section = sections[indexPath.section]
