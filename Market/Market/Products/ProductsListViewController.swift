@@ -24,38 +24,6 @@ final class ProductsListViewController: UIViewController {
         return collectionView
     }()
     
-    // MARK: - Private properties
-    
-//    private let sections = [
-//        ProductSection(
-//            title: "Популярное",
-//            items: [
-//                Product(image: "luke", title: "The"),
-//                Product(image: "luke", title: "most"),
-//                Product(image: "luke", title: "powerful"),
-//                Product(image: "luke", title: "Jedi")
-//            ]
-//        ),
-//        ProductSection(
-//            title: "Хиты продаж",
-//            items: [
-//                Product(image: "luke", title: "The"),
-//                Product(image: "luke", title: "most"),
-//                Product(image: "luke", title: "powerful"),
-//                Product(image: "luke", title: "Jedi")
-//            ]
-//        ),
-//        ProductSection(
-//            title: "Распродажа",
-//            items: [
-//                Product(image: "luke", title: "The"),
-//                Product(image: "luke", title: "most"),
-//                Product(image: "luke", title: "powerful"),
-//                Product(image: "luke", title: "Jedi")
-//            ]
-//        )
-//    ]
-    
     private var sections: [ProductSection] = []
     
     // MARK: - Lyfecycle
@@ -143,8 +111,6 @@ extension ProductsListViewController: UICollectionViewDataSource {
         header.indexPath = indexPath
         header.delegate = self
         
-        
         return header
     }
 }
-
