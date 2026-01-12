@@ -3,6 +3,7 @@
 //  Created by Хасан Магомедов on 28.09.2023.
 
 import UIKit
+import Combine
 
 final class ProductListViewController: UIViewController {
     
@@ -20,23 +21,8 @@ final class ProductListViewController: UIViewController {
     
     // MARK: - Private properties
     
-    private var storedSections: [ProductSection] = []
-    
-    private var searchResultSection: ProductSection?
-    
-    private var isSearching = false
-    
-    private var sections: [ProductSection] {
-        if let searchResultSection = searchResultSection {
-            return [searchResultSection]
-        }
-        
-        if isSearching {
-            return []
-        }
-        
-        return storedSections
-    }
+    private let viewModel = ProductListViewModel()
+    private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Life Cycle
     
@@ -57,15 +43,9 @@ final class ProductListViewController: UIViewController {
         tableView.delegate = self
         
         setupLayout()
+        setupBindings()
         
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(favoritesChanged),
-            name: Notifications.favoritesChanged,
-            object: nil
-        )
-        
-        loadProducts()
+        viewModel.loadProducts()
     }
     
     // MARK: - Layout
@@ -87,27 +67,21 @@ final class ProductListViewController: UIViewController {
         tableView.register(ProductsTableViewCell.self, forCellReuseIdentifier: ProductsTableViewCell.identifier)
     }
     
-    @objc
-    private func favoritesChanged() {
-        guard view.window == nil else { return }
-        
-        tableView.reloadData()
-    }
-    
-    private func loadProducts() {
-        ProductsSectionProvider.makeSections { [weak self] sections in
-            guard let self = self else { return }
-            self.storedSections = sections
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
+    private func setupBindings() {
+        // тут следим за изменениями в разделах, а removeDuplicates() убирает ненужные загрузки
+        viewModel.$sections
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.tableView.reloadData()
             }
-        }
+            .store(in: &cancellables)
     }
     
     func headerActionButtonTapped(index: Int?) {
         guard let index = index else { return }
         
-        let section = sections[index]
+        let section = viewModel.sections[index]
         
         let vc = CategoryListViewController(items: section.items)
         vc.title = section.title
@@ -121,7 +95,7 @@ final class ProductListViewController: UIViewController {
 extension ProductListViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        sections.count
+        viewModel.sections.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -129,13 +103,10 @@ extension ProductListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: ProductsTableViewCell.identifier,
-            for: indexPath
-        ) as? ProductsTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductsTableViewCell.identifier, for: indexPath) as? ProductsTableViewCell else {
             fatalError("Can not dequeue ProductsTableViewCell")
         }
-        let section = sections[indexPath.section]
+        let section = viewModel.sections[indexPath.section]
         cell.configure(items: section.items)
         cell.selectionStyle = .none
         cell.delegate = self
@@ -153,7 +124,7 @@ extension ProductListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let productsSection = sections[section]
+        let productsSection = viewModel.sections[section]
         let view = ProductsSectionHeaderView()
         view.delegate = self
         view.sectionIndex = section
@@ -168,20 +139,7 @@ extension ProductListViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text else { return }
-        
-        let allItems = storedSections.flatMap { $0.items }
-        
-        let filteredItems = allItems.filter { item in
-            item.title.lowercased().contains(text.lowercased())
-        }
-        
-        if !filteredItems.isEmpty {
-            searchResultSection = ProductSection(title: "Результат поиска", items: filteredItems)
-        } else {
-            searchResultSection = nil
-        }
-        
-        tableView.reloadData()
+        viewModel.search(query: text)
     }
 }
 
@@ -189,19 +147,12 @@ extension ProductListViewController: UISearchResultsUpdating {
 
 extension ProductListViewController: UISearchBarDelegate {
     
-    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        isSearching = true
-    }
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {}
     
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        isSearching = false
-        
-    }
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {}
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchResultSection = nil
-        
-        tableView.reloadData()
+        viewModel.cancelSearch()
     }
 }
 

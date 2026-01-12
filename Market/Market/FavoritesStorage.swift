@@ -10,6 +10,4 @@ final class FavoritesStorage {
     static let shared = FavoritesStorage()
     
     var items: [Product] = []
-    
-    private init() {}
 }

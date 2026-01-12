@@ -57,7 +57,10 @@ final class ProductsTableViewCell: UITableViewCell {
         collectionView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor).isActive = true
         collectionView.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor).isActive = true
         
-        collectionView.register(ProductsCollectionViewCell.self, forCellWithReuseIdentifier: ProductsCollectionViewCell.identifier)
+        collectionView.register(
+            ProductsCollectionViewCell.self,
+            forCellWithReuseIdentifier: ProductsCollectionViewCell.identifier
+        )
     }
     
     func configure(items: [Product]) {

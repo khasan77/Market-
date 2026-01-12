@@ -79,7 +79,7 @@ final class ProductsCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(titleLabel)
         
         titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
-        titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true 
+        titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
         titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8).isActive = true
     }
     
@@ -91,16 +91,18 @@ final class ProductsCollectionViewCell: UICollectionViewCell {
         likeButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
         likeButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
         
-        likeButton.addTarget(self, action: #selector(likeButtonTapped), for: .touchDown)
+        likeButton.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
     }
     
     @objc
     private func likeButtonTapped() {
-        likeButton.isSelected = !likeButton.isSelected
+        // получаем текущее состояние и переключаем
+        let newState = !likeButton.isSelected
+        likeButton.isSelected = newState
         
-        updateLikeButton(isSelected: likeButton.isSelected)
+        updateLikeButton(isSelected: newState)
         
-        delegate?.likeButtonTapped(cell: self, isSelected: likeButton.isSelected)
+        delegate?.likeButtonTapped(cell: self, isSelected: newState)
     }
     
     private func updateLikeButton(isSelected: Bool) {
@@ -116,23 +118,16 @@ final class ProductsCollectionViewCell: UICollectionViewCell {
     func configure(item: Product) {
         titleLabel.text = item.title
         let isLiked = FavoritesStorage.shared.items.contains { $0 === item }
+        likeButton.isSelected = isLiked
         updateLikeButton(isSelected: isLiked)
         
-        // если надо загружаем, иначе берем локальное
+        // загружаем картинку, иначе используем локальную
         if let imageURLString = item.imageURL, !imageURLString.isEmpty, let url = URL(string: imageURLString) {
             let placeholder = UIImage(named: "luke")
             imageView.kf.setImage(with: url, placeholder: placeholder)
         } else {
             imageView.image = UIImage(named: item.image)
-            imageView.kf.cancelDownloadTask() // отменяем все текущие загрузки
+            imageView.kf.cancelDownloadTask() // отменяем любую текущую загрузку 
         }
     }
-}
-
-// MARK: - ProductCollectionViewCellDelegate
-
-extension ProductsListViewController: ProductCollectionViewCellDelegate {
-    
-    func likeButtonTapped(cell: ProductsCollectionViewCell, isSelected: Bool) {}
-    
 }
