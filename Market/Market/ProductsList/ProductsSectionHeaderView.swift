@@ -29,7 +29,8 @@ final class ProductsSectionHeaderView: UIView {
         button.setTitle("Показать все", for: .normal)
         button.backgroundColor = .systemBlue
         button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 12
+        button.layer.cornerRadius = 10
+        button.contentEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10  )
         return button
     }()
     
