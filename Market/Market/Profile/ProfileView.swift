@@ -17,12 +17,14 @@ final class ProfileView: UIView {
     
     // MARK: - UI Elements
     
-    private let userImageView: UIImageView = {
+    let userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.layer.cornerRadius = 100
+        imageView.layer.cornerRadius = 75
         imageView.image = UIImage(named: "user")
+        imageView.isUserInteractionEnabled = true
         imageView.clipsToBounds = true
+        imageView.contentMode = .scaleAspectFill
         return imageView
     }()
     
@@ -30,7 +32,15 @@ final class ProfileView: UIView {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .boldSystemFont(ofSize: 23)
-        label.text = "Anakin Skywalker"
+        return label
+    }()
+    
+    var userPhoneLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 15)
+        label.textColor = .systemGray
+        label.text = ""
         return label
     }()
     
@@ -72,15 +82,19 @@ final class ProfileView: UIView {
         
         userImageView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         userImageView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
-        userImageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
-        userImageView.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        userImageView.heightAnchor.constraint(equalToConstant: 150).isActive = true
+        userImageView.widthAnchor.constraint(equalToConstant: 150).isActive = true
     }
     
     private func setupUserNameLabelLayout() {
         addSubview(userNameLabel)
+        addSubview(userPhoneLabel)
         
         userNameLabel.centerXAnchor.constraint(equalTo: userImageView.centerXAnchor).isActive = true
         userNameLabel.topAnchor.constraint(equalTo: userImageView.bottomAnchor, constant: 8).isActive = true
+        
+        userPhoneLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        userPhoneLabel.topAnchor.constraint(equalTo: userNameLabel.bottomAnchor, constant: 4).isActive = true
     }
     
     private func setupLogoutButtonLayout() {
@@ -99,6 +113,6 @@ final class ProfileView: UIView {
         
         showOrdersView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         showOrdersView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        showOrdersView.topAnchor.constraint(equalTo: userNameLabel.bottomAnchor, constant: 32).isActive = true
+        showOrdersView.topAnchor.constraint(equalTo: userPhoneLabel.bottomAnchor, constant: 32).isActive = true
     }
 }

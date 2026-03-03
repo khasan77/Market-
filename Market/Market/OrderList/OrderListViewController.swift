@@ -17,6 +17,8 @@ final class OrderListViewController: UIViewController {
         tableView.separatorStyle = .none
         return tableView
     }()
+    
+    private var orders: [ApiOrderResponse] = []
 
     // MARK: - Lyfecycle
     
@@ -37,6 +39,7 @@ final class OrderListViewController: UIViewController {
     
     private func setupLayout() {
         setupTableViewLayout()
+        loadOrders()
     }
     
     // MARK: - Private methods
@@ -51,6 +54,21 @@ final class OrderListViewController: UIViewController {
         
         tableView.register(OrderListTableViewCell.self, forCellReuseIdentifier: OrderListTableViewCell.identifier)
     }
+    
+    private func loadOrders() {
+        OrderService.shared.fetchOrders { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let orders):
+                    self?.orders = orders
+                    self?.tableView.reloadData()
+                    
+                case .failure(let error):
+                    print("Error loading orders: \(error)")
+                }
+            }
+        }
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -58,14 +76,14 @@ final class OrderListViewController: UIViewController {
 extension OrderListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        OrderStorage.shared.orders.count
+        orders.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderListTableViewCell.identifier, for: indexPath) as? OrderListTableViewCell else {
             fatalError("Can not dequeue CustomTableViewCell")
         }
-        let order = OrderStorage.shared.orders[indexPath.row]
+        let order = orders[indexPath.row]
         cell.configure(order: order)
         cell.selectionStyle = .none
         return cell

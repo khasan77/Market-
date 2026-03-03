@@ -38,7 +38,7 @@ class OrderConfirmationView: UIView {
     
     // MARK: - UI Elements
     
-    private let nameTextField: UITextField = {
+    let nameTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "Ваше имя"
@@ -49,7 +49,7 @@ class OrderConfirmationView: UIView {
         return textField
     }()
     
-    private let phoneNumberTextField: UITextField = {
+    let phoneNumberTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "Номер телефона"
@@ -76,7 +76,7 @@ class OrderConfirmationView: UIView {
         return tableView
     }()
     
-    private let confirmButton: UIButton = {
+    let confirmButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Оформить заказ", for: .normal)

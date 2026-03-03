@@ -6,8 +6,6 @@ import UIKit
 
 final class MainTabBarController: UITabBarController {
     
-    private var isFirstLaunch = true
-    
     // MARK: - UI Elements
     
     private var productListViewController: UINavigationController {
@@ -41,15 +39,5 @@ final class MainTabBarController: UITabBarController {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    // MARK: - Private methods
-    
-    private func showLoginScreen() {
-        let vc = LoginViewController()
-        let navigationController = UINavigationController(rootViewController: vc)
-        navigationController.modalPresentationStyle = .fullScreen
-        navigationController.navigationBar.tintColor = .black
-        present(navigationController, animated: true)
     }
 }

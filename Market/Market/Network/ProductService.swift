@@ -7,13 +7,6 @@
 
 import Foundation
 
-enum ProductServiceError: Error {
-    case invalidURL
-    case noData
-    case decodingError
-    case networkError(Error)
-}
-
 final class ProductService {
     
     static let shared = ProductService()
@@ -25,7 +18,7 @@ final class ProductService {
     func fetchProducts(
         category: String = "laptops",
         limit: Int = 20,
-        completion: @escaping (Result<[ApiProduct], ProductServiceError>) -> Void
+        completion: @escaping (Result<[ApiProduct], NetworkServiceError>) -> Void
     ) {
         let urlString = "\(baseURL)/category/\(category)?limit=\(limit)"
         
@@ -50,7 +43,7 @@ final class ProductService {
                 completion(.success(response.products))
             } catch {
                 print("Decoding error: \(error)")
-                completion(.failure(.decodingError))
+                completion(.failure(.decodingError(error)))
             }
         }.resume()
     }

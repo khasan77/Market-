@@ -30,12 +30,6 @@ final class FavoriteListViewController: UIViewController {
         return button
     }()
     
-    private let items = [
-        Product(image: "luke", title: "Распродажа 2"),
-        Product(image: "luke", title: "Распродажа 3"),
-        Product(image: "luke", title: "Распродажа 4")
-    ]
-    
     // MARK: - Lyfecycle
 
     override func viewDidLoad() {

@@ -131,7 +131,7 @@ final class ProductsCollectionViewCell: UICollectionViewCell {
 
 // MARK: - ProductCollectionViewCellDelegate
 
-extension ProductsListViewController: ProductCollectionViewCellDelegate {
+extension ProductListViewController: ProductCollectionViewCellDelegate {
     
     func likeButtonTapped(cell: ProductsCollectionViewCell, isSelected: Bool) {}
     
