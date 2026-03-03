@@ -26,11 +26,9 @@
 		F9879DA22ACE1ED100983FD9 /* FavoriteListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9879DA12ACE1ED100983FD9 /* FavoriteListTableViewCell.swift */; };
 		F9BCFBA82AC3990700F86354 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCFBA72AC3990700F86354 /* AppDelegate.swift */; };
 		F9BCFBAA2AC3990700F86354 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCFBA92AC3990700F86354 /* SceneDelegate.swift */; };
-		F9BCFBAC2AC3990700F86354 /* ProductsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCFBAB2AC3990700F86354 /* ProductsListViewController.swift */; };
 		F9BCFBB12AC3990800F86354 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F9BCFBB02AC3990800F86354 /* Assets.xcassets */; };
 		F9BCFBB42AC3990800F86354 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F9BCFBB22AC3990800F86354 /* LaunchScreen.storyboard */; };
 		F9BCFBBF2AC39D4800F86354 /* ProductsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCFBBE2AC39D4800F86354 /* ProductsCollectionViewCell.swift */; };
-		F9BCFBC42AC4B75000F86354 /* ProductSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCFBC32AC4B75000F86354 /* ProductSectionHeaderView.swift */; };
 		F9BCFBC72AC4C1DB00F86354 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCFBC62AC4C1DB00F86354 /* Product.swift */; };
 		F9BCFBCA2AC4D7E600F86354 /* ProductSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCFBC92AC4D7E600F86354 /* ProductSection.swift */; };
 		F9BCFBCE2AC4E20A00F86354 /* CategoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9BCFBCD2AC4E20A00F86354 /* CategoryListViewController.swift */; };
@@ -81,12 +79,10 @@
 		F9BCFBA42AC3990700F86354 /* Market.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Market.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9BCFBA72AC3990700F86354 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F9BCFBA92AC3990700F86354 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		F9BCFBAB2AC3990700F86354 /* ProductsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsListViewController.swift; sourceTree = "<group>"; };
 		F9BCFBB02AC3990800F86354 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F9BCFBB32AC3990800F86354 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F9BCFBB52AC3990800F86354 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F9BCFBBE2AC39D4800F86354 /* ProductsCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsCollectionViewCell.swift; sourceTree = "<group>"; };
-		F9BCFBC32AC4B75000F86354 /* ProductSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSectionHeaderView.swift; sourceTree = "<group>"; };
 		F9BCFBC62AC4C1DB00F86354 /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		F9BCFBC92AC4D7E600F86354 /* ProductSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSection.swift; sourceTree = "<group>"; };
 		F9BCFBCD2AC4E20A00F86354 /* CategoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListViewController.swift; sourceTree = "<group>"; };
@@ -239,9 +235,7 @@
 		F9BCFBBD2AC39CF500F86354 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F9BCFBAB2AC3990700F86354 /* ProductsListViewController.swift */,
 				F9BCFBBE2AC39D4800F86354 /* ProductsCollectionViewCell.swift */,
-				F9BCFBC32AC4B75000F86354 /* ProductSectionHeaderView.swift */,
 				F9BCFBC92AC4D7E600F86354 /* ProductSection.swift */,
 			);
 			path = Products;
@@ -461,7 +455,6 @@
 				6635B1AF2F50FC6A00DFBA1E /* ImageStorageService.swift in Sources */,
 				66C779342F0C6DD60079F812 /* ProductService.swift in Sources */,
 				6635B1952F3D629500DFBA1E /* NetworkServiceError.swift in Sources */,
-				F9BCFBC42AC4B75000F86354 /* ProductSectionHeaderView.swift in Sources */,
 				F9BCFBDA2AC5A2A000F86354 /* ProductsSectionHeaderView.swift in Sources */,
 				F9879D9A2ACE1B7800983FD9 /* MainTabBarController.swift in Sources */,
 				6635B1A22F438BAB00DFBA1E /* ApiOrderResponce.swift in Sources */,
@@ -480,7 +473,6 @@
 				F9E4EB332AD884D0003A5C04 /* RegisterView.swift in Sources */,
 				F9E4EB232AD75EC0003A5C04 /* ProfileView.swift in Sources */,
 				F9BCFBCA2AC4D7E600F86354 /* ProductSection.swift in Sources */,
-				F9BCFBAC2AC3990700F86354 /* ProductsListViewController.swift in Sources */,
 				F9879DA22ACE1ED100983FD9 /* FavoriteListTableViewCell.swift in Sources */,
 				F9E4EB302AD87A17003A5C04 /* LoginView.swift in Sources */,
 				F9E4EB082AD2CF99003A5C04 /* Notifications.swift in Sources */,
