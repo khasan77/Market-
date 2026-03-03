@@ -12,10 +12,8 @@ final class AuthService {
     static let shared = AuthService()
     
     // Для симулятора: http://localhost:8000
-    // Для реального устройства: http://192.168.X.X:8000
+    // Для реального устройства ip мака
     private let baseURL = "http://192.168.1.40:8000"
-    
-    private init() {}
     
     // Регистрация нового пользователя
     func register(

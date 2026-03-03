@@ -12,11 +12,10 @@ final class OrderService {
     static let shared = OrderService()
     
     // Для локальной разработки на симуляторе http://localhost:8000
-    // Для тестирования на реальном устройстве IP мака, пример http://192.168.1.100:8000
+    // Для тестирования на реальном устройстве IP мака
     private let baseURL = "http://192.168.1.40:8000"
     
     // Создание заказа на сервере
-    // - Parameters:
     //   - customerName: Имя покупателя
     //   - customerPhone: Телефон покупателя
     //   - products: Массив продуктов из корзины
