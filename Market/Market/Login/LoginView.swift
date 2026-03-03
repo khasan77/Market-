@@ -11,10 +11,11 @@ final class LoginView: UIView {
     
     // MARK: - UI Elements
     
-    private let emailTextField: UITextField = {
+    let phoneTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "Почта, номер телефона"
+        textField.placeholder = "Номер телефона"
+        textField.keyboardType = .phonePad
         textField.layer.borderWidth = 1
         textField.layer.cornerRadius = 12
         textField.leftView = UIView(frame: .init(x: 0, y: 0, width: 10, height: 0))
@@ -22,10 +23,11 @@ final class LoginView: UIView {
         return textField
     }()
     
-    private let passwordTextField: UITextField = {
+    let passwordTextField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "Пароль"
+        textField.isSecureTextEntry = true
         textField.layer.borderWidth = 1
         textField.layer.cornerRadius = 12
         textField.leftView = UIView(frame: .init(x: 0, y: 0, width: 10, height: 0))
@@ -72,18 +74,18 @@ final class LoginView: UIView {
     }
     
     private func setupEmailTextFieldLayout() {
-        addSubview(emailTextField)
+        addSubview(phoneTextField)
         
-        emailTextField.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
-        emailTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16).isActive = true
-        emailTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16).isActive = true
-        emailTextField.heightAnchor.constraint(equalToConstant: 72).isActive = true
+        phoneTextField.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
+        phoneTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16).isActive = true
+        phoneTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16).isActive = true
+        phoneTextField.heightAnchor.constraint(equalToConstant: 72).isActive = true
     }
     
     private func setupPasswordTextFieldLayout() {
         addSubview(passwordTextField)
         
-        passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 16).isActive = true
+        passwordTextField.topAnchor.constraint(equalTo: phoneTextField.bottomAnchor, constant: 16).isActive = true
         passwordTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16).isActive = true
         passwordTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16).isActive = true
         passwordTextField.heightAnchor.constraint(equalToConstant: 72).isActive = true

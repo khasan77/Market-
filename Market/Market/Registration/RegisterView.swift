@@ -14,45 +14,16 @@ final class RegisterView: UIView {
     let userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.layer.cornerRadius = 100
+        imageView.layer.cornerRadius = 75
         imageView.image = UIImage(named: "user")
         imageView.isUserInteractionEnabled = true
         imageView.clipsToBounds = true
         return imageView
     }()
-    
-    private let nameTextField: UITextField = {
-        let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "Имя"
-        textField.layer.borderWidth = 1
-        textField.layer.cornerRadius = 12
-        textField.leftView = UIView(frame: .init(x: 0, y: 0, width: 10, height: 0))
-        textField.leftViewMode = .always
-        return textField
-    }()
-    
-    private let emailTextField: UITextField = {
-        let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "Почта"
-        textField.layer.borderWidth = 1
-        textField.layer.cornerRadius = 12
-        textField.leftView = UIView(frame: .init(x: 0, y: 0, width: 10, height: 0))
-        textField.leftViewMode = .always
-        return textField
-    }()
-    
-    let passwordTextField: UITextField = {
-        let textField = UITextField()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "Пароль"
-        textField.layer.borderWidth = 1
-        textField.layer.cornerRadius = 12
-        textField.leftView = UIView(frame: .init(x: 0, y: 0, width: 10, height: 0))
-        textField.leftViewMode = .always
-        return textField
-    }()
+
+    lazy var phoneTextField = textFieldFactory(placeholder: "Телефон (+7...)")
+    lazy var nameTextField = textFieldFactory(placeholder: "Имя")
+    lazy var passwordTextField = textFieldFactory(placeholder: "Пароль")
     
     let registerButton: UIButton = {
         let button = UIButton()
@@ -82,27 +53,28 @@ final class RegisterView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - Layout
+}
+
+// MARK: - Layout
+
+extension RegisterView {
     
     private func setupLayout() {
         setupUserImageViewLayout()
         setupNameTextFieldLayout()
-        setupEmailTextFieldLayout()
+        setupPhoneTextFieldLayout()
         setupPasswordTextFieldLayout()
         setupRegisterButtonLayout()
         setupActivityIndicatorViewLayout()
     }
     
-    // MARK: - Private methods
-    
     private func setupUserImageViewLayout() {
         addSubview(userImageView)
         
         userImageView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        userImageView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 24).isActive = true
-        userImageView.heightAnchor.constraint(equalToConstant: 200).isActive = true
-        userImageView.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        userImageView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 60).isActive = true
+        userImageView.heightAnchor.constraint(equalToConstant: 150).isActive = true
+        userImageView.widthAnchor.constraint(equalToConstant: 150).isActive = true
     }
     
     private func setupNameTextFieldLayout() {
@@ -114,19 +86,19 @@ final class RegisterView: UIView {
         nameTextField.heightAnchor.constraint(equalToConstant: 72).isActive = true
     }
     
-    private func setupEmailTextFieldLayout() {
-        addSubview(emailTextField)
+    private func setupPhoneTextFieldLayout() {
+        addSubview(phoneTextField)
         
-        emailTextField.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 16).isActive = true
-        emailTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16).isActive = true
-        emailTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16).isActive = true
-        emailTextField.heightAnchor.constraint(equalToConstant: 72).isActive = true
+        phoneTextField.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 16).isActive = true
+        phoneTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16).isActive = true
+        phoneTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16).isActive = true
+        phoneTextField.heightAnchor.constraint(equalToConstant: 72).isActive = true
     }
     
     private func setupPasswordTextFieldLayout() {
         addSubview(passwordTextField)
         
-        passwordTextField.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 16).isActive = true
+        passwordTextField.topAnchor.constraint(equalTo: phoneTextField.bottomAnchor, constant: 16).isActive = true
         passwordTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16).isActive = true
         passwordTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16).isActive = true
         passwordTextField.heightAnchor.constraint(equalToConstant: 72).isActive = true
@@ -146,5 +118,21 @@ final class RegisterView: UIView {
         
         activityIndicatior.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         activityIndicatior.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+    }
+}
+
+// MARK: - TextFieldFactory 
+
+extension RegisterView {
+    
+    private func textFieldFactory(placeholder: String) -> UITextField {
+        let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.placeholder = placeholder
+        textField.layer.borderWidth = 1
+        textField.layer.cornerRadius = 12
+        textField.leftView = UIView(frame: .init(x: 0, y: 0, width: 10, height: 0))
+        textField.leftViewMode = .always
+        return textField
     }
 }

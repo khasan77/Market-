@@ -29,6 +29,12 @@ final class OrderListTableViewCell: UITableViewCell {
         return label
     }()
     
+    private let orderNumberLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     // MARK: - Init
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -47,6 +53,7 @@ final class OrderListTableViewCell: UITableViewCell {
         setupPriceLabelLayout()
         setupProductsCountLabelLayout()
         setupStatusLabelLayout()
+        setupOrderNumberLabelLayout()
     }
     
     // MARK: - Private methods
@@ -70,12 +77,20 @@ final class OrderListTableViewCell: UITableViewCell {
         
         statusLabel.leadingAnchor.constraint(equalTo: productsCountLabel.leadingAnchor).isActive = true
         statusLabel.topAnchor.constraint(equalTo: productsCountLabel.bottomAnchor, constant: 4).isActive = true
-        statusLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8).isActive = true
     }
     
-    func configure(order: Order) {
-        priceLabel.text = "Сумма заказа: \(order.price)"
-        productsCountLabel.text = "Количество позиций: \(order.products.count)"
-        statusLabel.text = order.status.rawValue
+    private func setupOrderNumberLabelLayout() {
+        contentView.addSubview(orderNumberLabel)
+        
+        orderNumberLabel.leadingAnchor.constraint(equalTo: statusLabel.leadingAnchor).isActive = true
+        orderNumberLabel.topAnchor.constraint(equalTo: statusLabel.bottomAnchor, constant: 4).isActive = true
+        orderNumberLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8).isActive = true
+    }
+    
+    func configure(order: ApiOrderResponse) {
+        priceLabel.text = "Сумма заказа: \(order.totalAmount)"
+        productsCountLabel.text = "Количество позиций: \(order.items.count)"
+        statusLabel.text = order.status.displayName
+        orderNumberLabel.text = "Номер заказа: \(order.orderNumber)"
     }
 }

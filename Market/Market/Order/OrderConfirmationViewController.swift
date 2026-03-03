@@ -13,9 +13,11 @@ final class OrderConfirmationViewController: UIViewController {
     
     private let mainView = OrderConfirmationView()
     
-    private let items: [Product]
+    private var items: [Product]
     
     private var price = 0
+    
+    private var orderService = OrderService.shared
     
     // MARK: - Init
     
@@ -63,6 +65,96 @@ final class OrderConfirmationViewController: UIViewController {
         
         self.price = price
     }
+    
+    private func showAlert(title: String = "Внимание", message: String) {
+        let alert = UIAlertController(
+            title: title,
+            message: message,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+    
+    private func createOrder(name: String, phone: String) {
+        // Показываем индикатор загрузки
+        //activityIndicator.startAnimating()
+        mainView.confirmButton.isEnabled = false
+        
+        // Отправляем заказ через OrderService
+        OrderService.shared.createOrder(
+            customerName: name,
+            customerPhone: phone,
+            products: items
+        ) { [weak self] result in
+            // Обработка выполняется в фоновом потоке,
+            // поэтому UI обновления делаем в главном потоке
+            DispatchQueue.main.async {
+                //self?.activityIndicator.stopAnimating()
+                self?.mainView.confirmButton.isEnabled = true
+                
+                switch result {
+                case .success(let orderResponse):
+                    // Заказ успешно создан!
+                    self?.handleSuccessfulOrder(orderResponse)
+                    
+                case .failure(let error):
+                    // Произошла ошибка
+                    self?.handleOrderError(error)
+                }
+            }
+        }
+    }
+    
+    private func handleSuccessfulOrder(_ order: ApiOrderResponse) {
+        print("✅ Заказ создан!")
+        print("Номер заказа: \(order.orderNumber)")
+        print("ID заказа: \(order.orderId)")
+        print("Сумма: \(order.totalAmount)₽")
+        print("Статус: \(order.status.displayName)")
+        
+        // Очищаем корзину
+        OrderStorage.shared.orders.append(
+            Order(
+                price: "\(order.totalAmount)",
+                products: items
+            )
+        )
+        items.removeAll()
+        
+        // Показываем уведомление
+        NotificationCenter.default.post(
+            name: Notification.Name("OrderCreated"),
+            object: nil
+        )
+        
+        // Показываем Alert с номером заказа
+        let alert = UIAlertController(
+            title: "Заказ оформлен! ✅",
+            message: """
+                Номер вашего заказа: \(order.orderNumber)
+                Сумма: \(order.totalAmount)₽
+                
+                Мы свяжемся с вами в ближайшее время!
+                """,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "OK", style: .default) { [weak self] _ in
+            // Возвращаемся на главный экран
+            self?.navigationController?.popToRootViewController(animated: true)
+        })
+        present(alert, animated: true)
+    }
+    
+    private func handleOrderError(_ error: NetworkServiceError) {
+        print("❌ Ошибка при создании заказа: \(error.localizedDescription)")
+        
+        // Показываем ошибку пользователю
+        showAlert(
+            title: "Ошибка",
+            message: "Не удалось оформить заказ.\n\n\(error.localizedDescription)\n\nПопробуйте еще раз."
+        )
+    }
 }
 
 // MARK: - OrderConfirmationViewDelegate
@@ -70,23 +162,18 @@ final class OrderConfirmationViewController: UIViewController {
 extension OrderConfirmationViewController: OrderConfirmationViewDelegate {
     
     func confirmButtonTapped() {
-        let order = Order(price: String(price), products: items)
-        OrderStorage.shared.orders.append(order)
-        
-        let alert = UIAlertController(title: "Оформление заказа", message: "Спасибо! Ваш заказ оформлен", preferredStyle: .alert)
-        
-        let okAction = UIAlertAction(title: "Ок", style: .default) { [weak self] _ in
-            FavoritesStorage.shared.items = []
-            
-            self?.navigationController?.popViewController(animated: true)
-    
-            NotificationCenter.default.post(name: Notifications.favoritesChanged, object: nil)
-            
+        guard let name = mainView.nameTextField.text, !name.isEmpty else {
+            showAlert(message: "Введите ваше имя")
+            return
         }
         
-        alert.addAction(okAction)
+        guard let phone = mainView.phoneNumberTextField.text, !phone.isEmpty else {
+            showAlert(message: "Введите номер телефона")
+            return
+        }
         
-        present(alert, animated: true)
+        // Отправляем заказ
+        createOrder(name: name, phone: phone)
     }
 }
 
@@ -105,6 +192,14 @@ extension OrderConfirmationViewController: UITableViewDataSource {
         cell.configure(item: FavoritesStorage.shared.items[indexPath.row])
         cell.selectionStyle = .none
         return cell
+    }
+}
+
+// MARK: - UITextFieldDelegate
+extension OrderConfirmationViewController: UITextFieldDelegate {
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
     }
 }
 

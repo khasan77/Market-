@@ -38,8 +38,85 @@ final class RegisterViewController: UIViewController {
     @objc
     private func registerButtonTapped() {
         mainView.activityIndicatior.startAnimating()
+        // 1. Получаем данные из полей
+        guard let name = mainView.nameTextField.text, !name.isEmpty,
+              let phone = mainView.phoneTextField.text, !phone.isEmpty,
+              let password = mainView.passwordTextField.text, !password.isEmpty else {
+            showAlert(title: "Ошибка", message: "Заполните все обязательные поля")
+            return
+        }
         
-        self.navigationController?.dismiss(animated: true)
+        // 2. Показываем индикатор загрузки
+        mainView.activityIndicatior.startAnimating()
+        mainView.registerButton.isEnabled = false
+        
+        // 3. Вызываем AuthService
+        AuthService.shared.register(
+            name: name,
+            phone: phone,
+            password: password
+        ) { [weak self] result in
+            // 4. Обрабатываем результат в главном потоке
+            DispatchQueue.main.async {
+                self?.mainView.activityIndicatior.stopAnimating()
+                self?.mainView.registerButton.isEnabled = true
+                
+                switch result {
+                case .success(let userResponse):
+                    print("✅ Регистрация успешна! User ID: \(userResponse.userId)")
+                    
+                    UserDefaults.standard.set(userResponse.userId, forKey: "currentUserId")
+                    UserDefaults.standard.set(userResponse.customerName, forKey: "currentUserName")
+                    UserDefaults.standard.set(userResponse.customerPhone, forKey: "currentUserPhone")
+                    
+                    // Сохраняем выбранное фото (если пользователь его выбрал)
+                    let defaultImage = UIImage(named: "user")
+                    if let avatar = self?.mainView.userImageView.image, avatar != defaultImage {
+                        ImageStorageService.shared.saveAvatar(avatar, for: userResponse.userId)
+                    }
+                    
+                    let tabBar = MainTabBarController()
+                    tabBar.selectedIndex = 2
+                    
+                    guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                          let window = windowScene.windows.first else { return }
+                    
+                    UIView.transition(with: window, duration: 0.4, options: .transitionCrossDissolve) {
+                        window.rootViewController = tabBar
+                    }
+                    
+                case .failure(let error):
+                    // Обработка ошибок
+                    var errorMessage = "Произошла ошибка"
+                    
+                    switch error {
+                    case .networkError:
+                        errorMessage = "Ошибка сети. Проверьте подключение к интернету"
+                    case .serverError(let message):
+                        errorMessage = message
+                    case .invalidURL:
+                        errorMessage = "Неверный URL сервера"
+                    case .noData:
+                        errorMessage = "Нет данных от сервера"
+                    case .decodingError:
+                        errorMessage = "Ошибка обработки данных"
+                    case .invalidResponse:
+                        errorMessage = "Неверный ответ"
+                    }
+                    
+                    self?.showAlert(title: "Ошибка регистрации", message: errorMessage)
+                }
+            }
+        }
+    }
+
+    // Вспомогательный метод для показа алертов
+    private func showAlert(title: String, message: String, completion: (() -> Void)? = nil) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+            completion?()
+        })
+        present(alert, animated: true)
     }
     
     @objc
@@ -81,7 +158,10 @@ final class RegisterViewController: UIViewController {
 
 extension RegisterViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+    func imagePickerController(
+        _ picker: UIImagePickerController,
+        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]
+    ) {
         
         defer {
             picker.dismiss(animated: true)
@@ -99,5 +179,14 @@ extension RegisterViewController: UIImagePickerControllerDelegate, UINavigationC
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true)
+    }
+}
+
+// MARK: - UITextFieldDelegate
+
+extension RegisterViewController: UITextFieldDelegate {
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
     }
 }
